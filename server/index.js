@@ -2,8 +2,10 @@ const express = require("express");
 const { google } = require("googleapis");
 const authRoutes = require("./routes/authRoutes");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dns = google.dns("v1");
+require("dotenv").config();
 
 const app = express();
 
@@ -17,6 +19,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 app.use(authRoutes);
 app.get("/", (req, res) => {

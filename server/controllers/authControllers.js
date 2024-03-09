@@ -1,4 +1,4 @@
-const UserModel = require("../models/userModel");
+const UserModel = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
@@ -8,6 +8,7 @@ const register = async (req, res) => {
   const isExisting = await UserModel.findOne({ username });
 
   if (isExisting) {
+    console.log("User already exists");
     return res.status(400).json({ error: "User already exists" });
   }
 
@@ -25,6 +26,7 @@ const register = async (req, res) => {
       { expiresIn: "4h" },
       (err, token) => {
         if (err) {
+          console.log("error in jwt", err);
           res.status(400).json(err);
         } else {
           // sends a cookie to the client with the token as the value of the cookie.
@@ -35,6 +37,7 @@ const register = async (req, res) => {
       }
     );
   } catch (error) {
+    console.log("error in register");
     res.status(400).json(error);
   }
 };
@@ -73,12 +76,7 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res
-    .cookie("token", "", {
-      sameSite: "none",
-      secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
-    })
-    .json("ok");
+  res.cookie("token", "").json("ok");
 };
 
 const getProfile = (req, res) => {

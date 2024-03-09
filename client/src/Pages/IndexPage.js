@@ -1,15 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function IndexPage() {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  if (!userInfo) {
-    return <Navigate to="/login" />;
-  }
-
-  return <div>hello Yash</div>;
+  return (
+    <>
+      {userInfo && <div>hello {userInfo.username}</div>}
+      {!userInfo && <div>Please register or log in to view this page</div>}
+    </>
+  );
 }
 
 export default IndexPage;
