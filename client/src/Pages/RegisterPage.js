@@ -63,6 +63,7 @@ function RegisterPage() {
                 value={username}
                 onChange={(ev) => setUsername(ev.target.value)}
                 variant="outlined"
+                required="true"
               />
               <TextField
                 fullWidth
@@ -71,6 +72,7 @@ function RegisterPage() {
                 value={projectId}
                 onChange={(ev) => setprojectId(ev.target.value)}
                 variant="outlined"
+                required="true"
               />
               <TextField
                 fullWidth
@@ -80,6 +82,7 @@ function RegisterPage() {
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
                 variant="outlined"
+                required="true"
               />
               <Button
                 variant="contained"

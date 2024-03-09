@@ -28,9 +28,9 @@ function LoginPage() {
       if (response.status === 200) {
         setUserInfo(response.data);
         setRedirect(true);
-        alert("User created successfully");
+        alert(`Welcome ${response.data.username}`);
       } else {
-        alert("User creation failed");
+        alert("An error occurred. Please try again.");
       }
     } catch (error) {
       alert("An error occurred: " + error.message);
@@ -62,6 +62,7 @@ function LoginPage() {
                 value={username}
                 onChange={(ev) => setUsername(ev.target.value)}
                 variant="outlined"
+                required="true"
               />
               <TextField
                 fullWidth
@@ -71,6 +72,7 @@ function LoginPage() {
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
                 variant="outlined"
+                required="true"
               />
               <Button
                 variant="contained"

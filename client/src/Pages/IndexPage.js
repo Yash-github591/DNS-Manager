@@ -9,8 +9,26 @@ function IndexPage() {
 
   return (
     <>
-      {userInfo && <div>hello {userInfo.username}</div>}
-      {!userInfo && <div>Please register or log in to view this page</div>}
+      {userInfo && (
+        <div>
+          <div>project id: {userInfo.projectId}</div>
+          hello {userInfo.username}
+        </div>
+      )}
+      {!userInfo && (
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "10%",
+          }}
+        >
+          <h1>Welcome to the Google Cloud DNS Manager</h1>
+          <p>
+            This is a simple app to manage your Google Cloud DNS Zones. Please
+            login or register to continue.
+          </p>
+        </div>
+      )}
     </>
   );
 }

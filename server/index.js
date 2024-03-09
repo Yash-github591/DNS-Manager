@@ -1,6 +1,7 @@
 const express = require("express");
 const { google } = require("googleapis");
 const authRoutes = require("./routes/authRoutes");
+const dnsRoutes = require("./routes/dnsRoutes");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -9,7 +10,7 @@ require("dotenv").config();
 
 const app = express();
 
-mongoose.connect("mongodb://127.0.0.1:27017/dns-manager").then(() => {
+mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log("Connected to MongoDB");
 });
 
@@ -21,6 +22,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
+app.use(dnsRoutes);
 app.use(authRoutes);
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -165,28 +167,28 @@ app.get("/update-dns-record", async (req, res) => {
   }
 });
 
-app.get("/list-dns-zones", async (req, res) => {
-  const projectId = "dns-manager-416604";
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
+// app.get("/list-dns-zones", async (req, res) => {
+//   const projectId = "dns-manager-416604";
+//   const auth = new google.auth.GoogleAuth({
+//     scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+//   });
 
-  const authClient = await auth.getClient();
-  const request = {
-    // Identifies the project addressed by this request.
-    project: projectId,
+//   const authClient = await auth.getClient();
+//   const request = {
+//     // Identifies the project addressed by this request.
+//     project: projectId,
 
-    auth: authClient,
-  };
+//     auth: authClient,
+//   };
 
-  try {
-    const response = (await dns.managedZones.list(request)).data;
-    res.send(JSON.stringify(response, null, 2));
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal Server Error");
-  }
-});
+//   try {
+//     const response = (await dns.managedZones.list(request)).data;
+//     res.send(JSON.stringify(response, null, 2));
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 app.listen(4000, () => {
   console.log("Server is running on port 4000");
