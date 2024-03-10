@@ -67,30 +67,30 @@ app.get("/create-dns-record", async (req, res) => {
   }
 });
 
-app.get("/see-all-dns-records", async (req, res) => {
-  console.log("see-all-dns-records");
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
+// app.get("/see-all-dns-records", async (req, res) => {
+//   console.log("see-all-dns-records");
+//   const auth = new google.auth.GoogleAuth({
+//     scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+//   });
 
-  const authClient = await auth.getClient();
-  const request = {
-    // Identifies the project addressed by this request.
-    project: "dns-manager-416604", // TODO: Update placeholder value.
+//   const authClient = await auth.getClient();
+//   const request = {
+//     // Identifies the project addressed by this request.
+//     project: "dns-manager-416604", // TODO: Update placeholder value.
 
-    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "my-new-zone", // TODO: Update placeholder value.
+//     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+//     managedZone: "my-new-zone", // TODO: Update placeholder value.
 
-    auth: authClient,
-  };
+//     auth: authClient,
+//   };
 
-  try {
-    const response = (await dns.resourceRecordSets.list(request)).data;
-    res.send(JSON.stringify(response, null, 2));
-  } catch (err) {
-    console.error(err);
-  }
-});
+//   try {
+//     const response = (await dns.resourceRecordSets.list(request)).data;
+//     res.send(JSON.stringify(response, null, 2));
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });
 
 app.get("/delete-dns-record", async (req, res) => {
   const auth = new google.auth.GoogleAuth({

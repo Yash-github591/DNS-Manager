@@ -1,19 +1,28 @@
-import * as React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Button, Drawer } from "@mui/material";
-import { useContext, useEffect } from "react";
+import {
+  Button,
+  Drawer,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { UserContext } from "../context/UserContext";
+import { dnsContext } from "../context/dnsContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Navbar() {
-  const [open, setOpen] = React.useState(false);
-  const [dnsZonesList, setDnsZonesList] = React.useState([]);
+  const [open, setOpen] = useState(false);
+  const { currZone, setCurrZone } = useContext(dnsContext);
+
   const { userInfo, setUserInfo } = useContext(UserContext);
+  const [dnsZones, setDnsZones] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +47,8 @@ function Navbar() {
         })
         .then((response) => {
           if (response.data) {
-            setDnsZonesList(response.data.managedZones);
+            setDnsZones(response.data.managedZones);
+            setCurrZone(response.data.managedZones[0].name);
             console.log(response.data.managedZones);
           }
         })
@@ -72,7 +82,26 @@ function Navbar() {
       >
         Change DNS Domain
       </h3>
-
+      {dnsZones && (
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl sx={{ ml: 4, minWidth: 180 }}>
+            <InputLabel id="demo-simple-select-label">Domains</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={currZone}
+              label="Domains"
+              onChange={(event) => setCurrZone(event.target.value)}
+            >
+              {dnsZones.map((zone) => (
+                <MenuItem value={zone.name} key={zone.id}>
+                  {zone.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      )}
       <Button
         variant="outlined"
         style={{
@@ -89,7 +118,13 @@ function Navbar() {
   return (
     <>
       {userInfo && (
-        <AppBar position="static">
+        <AppBar
+          position="static"
+          style={{
+            height: "10vh",
+            backgroundColor: "#1a1a1a",
+          }}
+        >
           <Container maxWidth="xl">
             <Toolbar
               disableGutters

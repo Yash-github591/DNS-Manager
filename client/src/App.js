@@ -8,6 +8,7 @@ import IndexPage from "./Pages/IndexPage";
 import LoginPage from "./Pages/LoginPage";
 import RegisterPage from "./Pages/RegisterPage";
 import { UserContextProvider } from "./context/UserContext";
+import { DnsContextProvider } from "./context/dnsContext";
 
 function App() {
   // const [allDnsRecords, setAllDnsRecords] = useState([]);
@@ -30,17 +31,19 @@ function App() {
   // }
 
   return (
-    <UserContextProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/" element={<IndexPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </UserContextProvider>
+    <DnsContextProvider>
+      <UserContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="/" element={<IndexPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </UserContextProvider>
+    </DnsContextProvider>
   );
 }
 

@@ -1,18 +1,116 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
+import { dnsContext } from "../context/dnsContext";
 import { useNavigate } from "react-router-dom";
+import Chart from "../Components/Chart";
 import axios from "axios";
 
 function IndexPage() {
+  const [zoneRecords, setZoneRecords] = useState([]);
   const { userInfo, setUserInfo } = useContext(UserContext);
+  const { currZone } = useContext(dnsContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRecords = () => {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/see-all-dns-records`, {
+          params: {
+            zone: currZone,
+          },
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res.data);
+          setZoneRecords(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    if (userInfo) {
+      fetchRecords();
+    }
+  }, [currZone, userInfo]);
 
   return (
     <>
       {userInfo && (
-        <div>
-          <div>project id: {userInfo.projectId}</div>
-          hello {userInfo.username}
+        <div
+          id="mainDiv"
+          style={{
+            height: "90vh",
+            width: "100%",
+          }}
+        >
+          <div
+            id="upperDiv"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              height: "30%",
+            }}
+          >
+            <div
+              id="leftDiv"
+              style={{
+                width: "50%",
+                borderRight: "1px solid black",
+                borderBottom: "1px solid black",
+              }}
+            >
+              {currZone != "" && (
+                <div
+                  style={{
+                    display: "flex",
+                  }}
+                >
+                  <div>
+                    <div>
+                      <b
+                        style={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        Project Id:{" "}
+                      </b>
+                      {userInfo.projectId}
+                      <br />
+                      <b
+                        style={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        current Zone:{" "}
+                      </b>
+                      {currZone}
+                    </div>
+                  </div>
+                  <Chart />
+                </div>
+              )}
+            </div>
+            <div
+              id="rightDiv"
+              style={{
+                width: "50%",
+                borderBottom: "1px solid black",
+              }}
+            >
+              div2
+            </div>
+          </div>
+          <div
+            id="lowerDiv"
+            style={{
+              height: "70%",
+              textAlign: "center",
+              // borderTop: "1px solid black",
+            }}
+          >
+            div3
+          </div>
         </div>
       )}
       {!userInfo && (
