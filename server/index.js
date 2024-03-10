@@ -45,7 +45,7 @@ app.get("/create-dns-record", async (req, res) => {
       // TODO: Add desired properties to the request body.
       additions: [
         {
-          name: "hi.zoneexample.com.", // Replace with your domain name
+          name: "hiYash.zoneexample.com.", // Replace with your domain name
           type: "A",
           ttl: 300,
           rrdatas: ["192.168.1.1"], // Replace with your IP address

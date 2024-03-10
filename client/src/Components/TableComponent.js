@@ -16,34 +16,69 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { dnsContext } from "../context/dnsContext";
+import axios from "axios";
 
 export default function TableComponent({ value }) {
   const [openAlert, setOpenAlert] = useState(false);
+  const [record, setRecord] = useState(null);
+  const [rows, setRows] = useState([]);
+  const { currZone } = useContext(dnsContext);
 
   console.log(value);
+  var isAgree = false;
 
-  function createData(name, type, ttl) {
-    return { name, type, ttl };
-  }
-  const rows = [],
-    isAgree = false;
+  useEffect(() => {
+    if (value && value.length > 0) {
+      var temp = [];
+      for (var i = 0; i < value.length; i++) {
+        temp.push({
+          kind: value[i].kind,
+          name: value[i].name,
+          type: value[i].type,
+          ttl: value[i].ttl,
+          rrdatas: value[i].rrdatas,
+          signatureRrdatas: value[i].signatureRrdatas,
+        });
+      }
+      setRows(temp);
+    }
+  }, [value]);
 
   const handleClose = () => {
     setOpenAlert(false);
     if (isAgree) {
       // delete the record
-      console.log("Delete the record");
+      console.log("Delete the record", record);
+      axios
+        .delete(`${process.env.REACT_APP_API_URL}/delete-dns-record`, {
+          params: {
+            zone: currZone,
+            record: {
+              name: record.name,
+              type: record.type,
+              ttl: record.ttl,
+              rrdatas: record.rrdatas,
+              kind: record.kind,
+              signatureRrdatas: record.signatureRrdatas,
+            },
+          },
+          withCredentials: true,
+        })
+        .then((res) => {
+          alert("Record deleted successfully");
+          setRows(rows.filter((row) => row.name !== record.name));
+          console.log(res);
+        })
+        .catch((err) => {
+          alert(err);
+          console.log(err);
+        });
     } else {
       console.log("Don't delete the record");
     }
   };
-
-  if (value && value.length > 0) {
-    for (var i = 0; i < value.length; i++) {
-      rows.push(createData(value[i].name, value[i].type, value[i].ttl));
-    }
-  }
 
   return (
     <>
@@ -54,14 +89,8 @@ export default function TableComponent({ value }) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
+          {"Are you sure you want to delete this record ?"}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
           <Button
@@ -122,7 +151,12 @@ export default function TableComponent({ value }) {
                   }}
                   align="center"
                 >
-                  <IconButton onClick={() => setOpenAlert(true)}>
+                  <IconButton
+                    onClick={() => {
+                      setOpenAlert(true);
+                      setRecord(row);
+                    }}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>

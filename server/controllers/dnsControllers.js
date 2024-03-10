@@ -60,7 +60,7 @@ const DeleteDnsRecord = async (req, res) => {
   const authClient = await auth.getClient();
 
   const projectId = req.user.projectId,
-    zone = req.query.zone,
+    zone = req.query.zone.name,
     record = req.query.record;
 
   const request = {
@@ -75,6 +75,7 @@ const DeleteDnsRecord = async (req, res) => {
     type: record.type,
     ttl: record.ttl,
     rrdatas: record.rrdatas,
+    kind: record.kind,
     auth: authClient,
   };
 
@@ -83,7 +84,8 @@ const DeleteDnsRecord = async (req, res) => {
     res.send(JSON.stringify(response, null, 2));
   } catch (err) {
     console.error(err);
+    res.status(500).json(err).send("Internal Server Error");
   }
 };
 
-module.exports = { ListDnsZones, SeeDnsRecords };
+module.exports = { ListDnsZones, SeeDnsRecords, DeleteDnsRecord };
