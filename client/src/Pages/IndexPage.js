@@ -4,6 +4,8 @@ import { dnsContext } from "../context/dnsContext";
 import { useNavigate } from "react-router-dom";
 import Chart from "../Components/Chart";
 import axios from "axios";
+import { Paper, Typography } from "@mui/material";
+import TableComponent from "../Components/TableComponent";
 
 function IndexPage() {
   const [zoneRecords, setZoneRecords] = useState([]);
@@ -49,13 +51,13 @@ function IndexPage() {
             style={{
               display: "flex",
               justifyContent: "space-between",
-              height: "30%",
+              height: "45%",
             }}
           >
             <div
               id="leftDiv"
               style={{
-                width: "50%",
+                width: "60%",
                 borderRight: "1px solid black",
                 borderBottom: "1px solid black",
               }}
@@ -66,10 +68,15 @@ function IndexPage() {
                     display: "flex",
                   }}
                 >
-                  <div>
+                  <div
+                    style={{
+                      margin: "5%",
+                    }}
+                  >
                     <div>
                       <b
                         style={{
+                          display: "block",
                           fontSize: "20px",
                         }}
                       >
@@ -77,8 +84,10 @@ function IndexPage() {
                       </b>
                       {userInfo.projectId}
                       <br />
+                      <br />
                       <b
                         style={{
+                          display: "block",
                           fontSize: "20px",
                         }}
                       >
@@ -87,14 +96,14 @@ function IndexPage() {
                       {currZone.name}
                     </div>
                   </div>
-                  <Chart />
+                  {zoneRecords && <Chart value={zoneRecords.rrsets} />}
                 </div>
               )}
             </div>
             <div
               id="rightDiv"
               style={{
-                width: "50%",
+                width: "40%",
                 borderBottom: "1px solid black",
               }}
             >
@@ -104,12 +113,29 @@ function IndexPage() {
           <div
             id="lowerDiv"
             style={{
-              height: "70%",
+              display: "flex",
+              height: "55%",
               textAlign: "center",
-              // borderTop: "1px solid black",
             }}
           >
-            div3
+            {zoneRecords && (
+              <TableComponent
+                style={{
+                  width: "50%",
+                  padding: "5%",
+                  height: "100%",
+                }}
+                value={zoneRecords.rrsets}
+              />
+            )}
+            <div
+              id="lowerLeft"
+              style={{
+                width: "50%",
+                height: "100%",
+                borderLeft: "1px solid black",
+              }}
+            ></div>
           </div>
         </div>
       )}
