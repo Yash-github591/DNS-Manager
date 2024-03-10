@@ -17,17 +17,20 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { dnsContext } from "../context/dnsContext";
+import { EditRecord } from "../Pages/EditRecord";
 import axios from "axios";
 
 export default function TableComponent({ value }) {
   const [openAlert, setOpenAlert] = useState(false);
   const [record, setRecord] = useState(null);
   const [rows, setRows] = useState([]);
-  const { currZone } = useContext(dnsContext);
+  const { currZone, setRecordTobeEdited } = useContext(dnsContext);
 
   console.log(value);
   var isAgree = false;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (value && value.length > 0) {
@@ -141,7 +144,15 @@ export default function TableComponent({ value }) {
                     paddingRight: "0px",
                   }}
                 >
-                  <Button size="small" variant="outlined">
+                  <Button
+                    onClick={() => {
+                      console.log(row);
+                      setRecordTobeEdited(row);
+                      navigate("/edit");
+                    }}
+                    size="small"
+                    variant="outlined"
+                  >
                     Edit
                   </Button>
                 </TableCell>

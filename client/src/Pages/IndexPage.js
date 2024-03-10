@@ -6,6 +6,7 @@ import Chart from "../Components/Chart";
 import axios from "axios";
 import { Paper, Typography } from "@mui/material";
 import TableComponent from "../Components/TableComponent";
+import CreateRecord from "../Components/CreateRecord";
 
 function IndexPage() {
   const [zoneRecords, setZoneRecords] = useState([]);
@@ -129,13 +130,15 @@ function IndexPage() {
               />
             )}
             <div
-              id="lowerLeft"
+              id="lowerRight"
               style={{
                 width: "50%",
                 height: "100%",
                 borderLeft: "1px solid black",
               }}
-            ></div>
+            >
+              <CreateRecord />
+            </div>
           </div>
         </div>
       )}

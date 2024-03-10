@@ -88,4 +88,58 @@ const DeleteDnsRecord = async (req, res) => {
   }
 };
 
-module.exports = { ListDnsZones, SeeDnsRecords, DeleteDnsRecord };
+const UpdateDnsRecord = async (req, res) => {
+  const auth = new google.auth.GoogleAuth({
+    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+  });
+
+  const authClient = await auth.getClient();
+
+  console.log("update record", req.user);
+  const projectId = req.user.projectId;
+  const { zone, record, recordTobeEdited } = req.body;
+  const request = {
+    // Identifies the project addressed by this request.
+    project: projectId, // TODO: Update placeholder value.
+
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: zone.name, // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+      additions: [
+        {
+          name: record.name, // Replace with your domain name
+          type: record.type,
+          ttl: record.ttl,
+          rrdatas: record.rrdatas, // Replace with your new IP address
+        },
+      ],
+      deletions: [
+        {
+          name: recordTobeEdited.name, // Replace with your domain name
+          type: recordTobeEdited.type,
+          ttl: recordTobeEdited.ttl,
+          rrdatas: recordTobeEdited.rrdatas, // Replace with the old IP address
+        },
+      ],
+    },
+
+    auth: authClient,
+  };
+
+  try {
+    const response = (await dns.changes.create(request)).data;
+    res.send(JSON.stringify(response, null, 2));
+  } catch (err) {
+    // console.error("error line 135", err.response.data.error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+module.exports = {
+  ListDnsZones,
+  SeeDnsRecords,
+  DeleteDnsRecord,
+  UpdateDnsRecord,
+};
