@@ -107,7 +107,7 @@ function IndexPage() {
                 borderBottom: "1px solid black",
               }}
             >
-              div2
+              filters
             </div>
           </div>
           <div

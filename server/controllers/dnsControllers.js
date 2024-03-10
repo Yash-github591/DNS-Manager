@@ -52,4 +52,38 @@ const SeeDnsRecords = async (req, res) => {
   }
 };
 
+const DeleteDnsRecord = async (req, res) => {
+  const auth = new google.auth.GoogleAuth({
+    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+  });
+
+  const authClient = await auth.getClient();
+
+  const projectId = req.user.projectId,
+    zone = req.query.zone,
+    record = req.query.record;
+
+  const request = {
+    // Identifies the project addressed by this request.
+    project: projectId, // TODO: Update placeholder value.
+
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: zone, // TODO: Update placeholder value.
+
+    // Identifies the record set to delete.
+    name: record.name,
+    type: record.type,
+    ttl: record.ttl,
+    rrdatas: record.rrdatas,
+    auth: authClient,
+  };
+
+  try {
+    const response = (await dns.resourceRecordSets.delete(request)).data;
+    res.send(JSON.stringify(response, null, 2));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 module.exports = { ListDnsZones, SeeDnsRecords };

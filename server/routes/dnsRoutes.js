@@ -9,5 +9,6 @@ const router = express.Router();
 
 router.get("/list-dns-zones", authenticateToken, ListDnsZones);
 router.get("/see-all-dns-records", authenticateToken, SeeDnsRecords);
+router.delete("/delete-dns-record", authenticateToken, SeeDnsRecords);
 
 module.exports = router;
