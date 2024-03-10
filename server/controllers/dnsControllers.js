@@ -31,8 +31,6 @@ const SeeDnsRecords = async (req, res) => {
 
   const authClient = await auth.getClient();
 
-  console.log("user", req.user);
-  console.log("query", req.query);
   const currProjectId = req.user.projectId;
   const currZone = req.query.zone;
 

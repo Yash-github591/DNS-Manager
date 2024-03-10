@@ -48,7 +48,7 @@ function Navbar() {
         .then((response) => {
           if (response.data) {
             setDnsZones(response.data.managedZones);
-            setCurrZone(response.data.managedZones[0].name);
+            setCurrZone(response.data.managedZones[0]);
             console.log(response.data.managedZones);
           }
         })
@@ -94,7 +94,7 @@ function Navbar() {
               onChange={(event) => setCurrZone(event.target.value)}
             >
               {dnsZones.map((zone) => (
-                <MenuItem value={zone.name} key={zone.id}>
+                <MenuItem value={zone} key={zone.id}>
                   {zone.name}
                 </MenuItem>
               ))}

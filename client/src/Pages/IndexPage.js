@@ -16,7 +16,7 @@ function IndexPage() {
       axios
         .get(`${process.env.REACT_APP_API_URL}/see-all-dns-records`, {
           params: {
-            zone: currZone,
+            zone: currZone.name,
           },
           withCredentials: true,
         })
@@ -29,7 +29,7 @@ function IndexPage() {
         });
     };
 
-    if (userInfo) {
+    if (userInfo && currZone) {
       fetchRecords();
     }
   }, [currZone, userInfo]);
@@ -60,7 +60,7 @@ function IndexPage() {
                 borderBottom: "1px solid black",
               }}
             >
-              {currZone != "" && (
+              {currZone && userInfo && (
                 <div
                   style={{
                     display: "flex",
@@ -84,7 +84,7 @@ function IndexPage() {
                       >
                         current Zone:{" "}
                       </b>
-                      {currZone}
+                      {currZone.name}
                     </div>
                   </div>
                   <Chart />
