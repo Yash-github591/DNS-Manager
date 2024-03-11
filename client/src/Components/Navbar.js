@@ -140,7 +140,7 @@ function Navbar() {
                   display: { xs: "none", md: "flex" },
                   fontFamily: "monospace",
                   fontWeight: 700,
-                  fontSize: "1.5rem",
+                  fontSize: "2.5rem",
                   letterSpacing: ".3rem",
                   color: "inherit",
                   textDecoration: "none",
@@ -149,26 +149,47 @@ function Navbar() {
                 DNS Manager
               </Typography>
               <Typography
-                variant="h4"
-                noWrap
-                component="a"
-                sx={{
-                  mr: 2,
-                  display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
-                  fontWeight: 300,
-                  fontSize: "1rem",
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                  textDecoration: "none",
-                  padding: "0.5rem",
-                  border: "1px solid #fff",
-                  borderRadius: "15%",
-                }}
-                type="button"
-                onClick={toggleDrawer(true)}
+                style={{ display: "flex", justifyContent: "space-between" }}
               >
-                Hi, {userInfo.username}
+                <Typography
+                  variant="h6"
+                  noWrap
+                  sx={{
+                    mr: 5,
+                    display: { xs: "none", md: "flex" },
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                    fontSize: "1.5rem",
+                    letterSpacing: ".3rem",
+                    color: "inherit",
+                    textDecoration: "none",
+                  }}
+                >
+                  Hi {userInfo.username}!
+                </Typography>
+
+                <Typography
+                  variant="h4"
+                  noWrap
+                  component="a"
+                  sx={{
+                    mr: 2,
+                    display: { xs: "none", md: "flex" },
+                    fontFamily: "monospace",
+                    fontWeight: 300,
+                    fontSize: "1rem",
+                    letterSpacing: ".3rem",
+                    color: "inherit",
+                    textDecoration: "none",
+                    padding: "0.5rem",
+                    border: "1px solid #fff",
+                    borderRadius: "15%",
+                  }}
+                  type="button"
+                  onClick={toggleDrawer(true)}
+                >
+                  change domain
+                </Typography>
               </Typography>
               <Drawer open={open} anchor="right" onClose={toggleDrawer(false)}>
                 {DrawerList}
