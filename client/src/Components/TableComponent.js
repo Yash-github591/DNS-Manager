@@ -8,25 +8,21 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { dnsContext } from "../context/dnsContext";
 import { filterContext } from "../context/FilterContext";
-import axios from "axios";
+import DetailsModal from "./DetailsModal";
+import DeleteDialog from "./DeleteDialog";
 
 export default function TableComponent() {
   const [openAlert, setOpenAlert] = useState(false);
   const [record, setRecord] = useState(null);
   const [rows, setRows] = useState([]);
   const { type, setType } = useContext(filterContext);
+  const [detailedRow, setDetailedRow] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
   const { currZone, setRecordTobeEdited, zoneRecords, setZoneRecords } =
     useContext(dnsContext);
 
@@ -38,6 +34,7 @@ export default function TableComponent() {
     if (zoneRecords && zoneRecords.rrsets && zoneRecords.rrsets.length > 0) {
       var temp = [],
         value = zoneRecords.rrsets;
+      console.log(value);
       for (var i = 0; i < value.length; i++) {
         if (type == "Select" || type == value[i].type) {
           temp.push({
@@ -54,65 +51,21 @@ export default function TableComponent() {
     }
   }, [type, zoneRecords]);
 
-  const handleClose = () => {
-    setOpenAlert(false);
-    if (isAgree) {
-      // delete the record
-      console.log("Delete the record", record);
-      axios
-        .delete(`${process.env.REACT_APP_API_URL}/delete-dns-record`, {
-          params: {
-            zone: currZone,
-            record: {
-              name: record.name,
-              type: record.type,
-              ttl: record.ttl,
-              rrdatas: record.rrdatas,
-              kind: record.kind,
-              signatureRrdatas: record.signatureRrdatas,
-            },
-          },
-          withCredentials: true,
-        })
-        .then((res) => {
-          alert("Record deleted successfully");
-          setRows(rows.filter((row) => row.name !== record.name));
-          setZoneRecords(rows.filter((row) => row.name !== record.name));
-          console.log(res);
-        })
-        .catch((err) => {
-          alert(err);
-          console.log(err);
-        });
-    } else {
-      console.log("Don't delete the record");
-    }
-  };
-
   return (
     <>
-      <Dialog
-        open={openAlert}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are you sure you want to delete this record ?"}
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button
-            onClick={() => {
-              isAgree = true;
-              handleClose();
-            }}
-            autoFocus
-          >
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DetailsModal
+        showDetails={showDetails}
+        setShowDetails={setShowDetails}
+        detailedRow={detailedRow}
+      />
+      <DeleteDialog
+        openAlert={openAlert}
+        setOpenAlert={setOpenAlert}
+        record={record}
+        rows={rows}
+        setRows={setRows}
+        currZone={currZone}
+      />
       {rows.length > 0 && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 150 }} aria-label="simple table">
@@ -128,7 +81,7 @@ export default function TableComponent() {
                 <TableCell align="center">S.No</TableCell>
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Type</TableCell>
-                <TableCell align="center">TTL</TableCell>
+                <TableCell align="center"></TableCell>
                 <TableCell align="center"></TableCell>
                 <TableCell align="center"></TableCell>
               </TableRow>
@@ -144,7 +97,25 @@ export default function TableComponent() {
                     {row.name}
                   </TableCell>
                   <TableCell align="center">{row.type}</TableCell>
-                  <TableCell align="center">{row.ttl}</TableCell>
+                  {/* <TableCell align="center">{row.ttl}</TableCell> */}
+                  <TableCell
+                    align="center"
+                    style={{
+                      paddingRight: "0px",
+                    }}
+                  >
+                    <Button
+                      onClick={() => {
+                        console.log(row);
+                        setDetailedRow(row);
+                        setShowDetails(true);
+                      }}
+                      size="small"
+                      variant="outlined"
+                    >
+                      Details
+                    </Button>
+                  </TableCell>
                   <TableCell
                     align="center"
                     style={{
