@@ -105,6 +105,18 @@ function Navbar() {
       <Button
         variant="outlined"
         style={{
+          marginLeft: "24%",
+          marginTop: "10%",
+        }}
+        onClick={() => {
+          navigate("/editProfile");
+        }}
+      >
+        Edit Profile
+      </Button>
+      <Button
+        variant="outlined"
+        style={{
           marginLeft: "30%",
           marginTop: "10%",
         }}

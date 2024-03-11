@@ -6,6 +6,7 @@ import IndexPage from "./Pages/IndexPage";
 import LoginPage from "./Pages/LoginPage";
 import RegisterPage from "./Pages/RegisterPage";
 import EditRecord from "./Pages/EditRecord";
+import EditProfile from "./Pages/EditProfile";
 import { UserContextProvider } from "./context/UserContext";
 import { DnsContextProvider } from "./context/dnsContext";
 import { FilterContextProvider } from "./context/FilterContext";
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/edit" element={<EditRecord />} />
+                <Route path="/editProfile" element={<EditProfile />} />
               </Route>
             </Routes>
           </BrowserRouter>

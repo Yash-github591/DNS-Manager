@@ -75,6 +75,25 @@ const login = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  const { username, projectId } = req.body;
+  const { id } = req.user;
+  try {
+    const userDoc = await UserModel.findByIdAndUpdate(
+      id,
+      { username, projectId },
+      { new: true }
+    );
+    if (!userDoc) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ username: userDoc.username, projectId: userDoc.projectId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const logout = (req, res) => {
   res.cookie("token", "").json("ok");
 };
@@ -97,4 +116,11 @@ const getProfileById = async (req, res) => {
   }
 };
 
-module.exports = { register, login, logout, getProfile, getProfileById };
+module.exports = {
+  register,
+  login,
+  logout,
+  getProfile,
+  getProfileById,
+  updateProfile,
+};
