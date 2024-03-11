@@ -45,6 +45,7 @@ function EditProfile() {
       .then((response) => {
         if (response.status === 200) {
           setUserInfo(response.data);
+          console.log(response.data);
           setRedirect(true);
           alert("Profile updated successfully");
         } else {

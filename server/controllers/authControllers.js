@@ -31,7 +31,10 @@ const register = async (req, res) => {
         } else {
           // sends a cookie to the client with the token as the value of the cookie.
           res
-            .cookie("token", token)
+            .cookie("token", token, {
+              sameSite: "none",
+              secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
+            })
             .json({ username, projectId, id: userDoc._id });
         }
       }
@@ -59,11 +62,16 @@ const login = async (req, res) => {
           if (err) {
             res.status(400).json(err);
           } else {
-            res.cookie("token", token).json({
-              username,
-              projectId: userDoc.projectId,
-              id: userDoc._id,
-            });
+            res
+              .cookie("token", token, {
+                sameSite: "none",
+                secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
+              })
+              .json({
+                username,
+                projectId: userDoc.projectId,
+                id: userDoc._id,
+              });
           }
         }
       );
@@ -76,8 +84,19 @@ const login = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-  const { username, projectId } = req.body;
+  const { username, projectId, password } = req.body;
   const { id } = req.user;
+
+  // check if the user exists and the password is correct
+
+  const userDoc = await UserModel.findById(id);
+  if (!userDoc) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  const passOk = bcrypt.compareSync(password, userDoc.password);
+  if (!passOk) {
+    return res.status(400).json({ error: "Invalid password" });
+  }
   try {
     const userDoc = await UserModel.findByIdAndUpdate(
       id,
@@ -87,7 +106,25 @@ const updateProfile = async (req, res) => {
     if (!userDoc) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json({ username: userDoc.username, projectId: userDoc.projectId });
+
+    // generate a token with the updated user info
+    jwt.sign(
+      { username, projectId, id: userDoc._id },
+      process.env.SECRET_KEY,
+      { expiresIn: "4h" },
+      (err, token) => {
+        if (err) {
+          res.status(400).json(err);
+        } else {
+          res
+            .cookie("token", token, {
+              sameSite: "none",
+              secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
+            })
+            .json({ username, projectId });
+        }
+      }
+    );
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
@@ -95,7 +132,12 @@ const updateProfile = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.cookie("token", "").json("ok");
+  res
+    .cookie("token", "", {
+      sameSite: "none",
+      secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
+    })
+    .json("ok");
 };
 
 const getProfile = (req, res) => {
