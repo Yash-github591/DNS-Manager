@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { dnsContext } from "../context/dnsContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   TextField,
@@ -10,14 +11,16 @@ import {
   Paper,
 } from "@mui/material";
 
-function CreateRecord({ setZoneRecords }) {
-  const { currZone } = useContext(dnsContext);
+function CreateRecord() {
+  const { currZone, zoneRecords, setZoneRecords } = useContext(dnsContext);
   const [rrdatasInput, setRrdatasInput] = useState(""); // Assuming rrdatas is an array
   const [Record, setRecord] = useState({
     name: "",
     type: "",
     ttl: "",
   });
+
+  const navigate = useNavigate();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -57,12 +60,18 @@ function CreateRecord({ setZoneRecords }) {
       )
       .then((response) => {
         alert("Record added successfully");
-        // setZoneRecords((prevRecords) => [...prevRecords, Record]);
+        var newRecord = {
+          name: Record.name,
+          type: Record.type,
+          ttl: Record.ttl,
+          rrdatas: newRrdatas,
+        };
+        // setZoneRecords((prevRecords) => [...prevRecords, newRecord]);
         console.log(response);
       })
       .catch((error) => {
         alert("Error adding record");
-        console.error(error.response);
+        console.error(error);
       });
   };
 

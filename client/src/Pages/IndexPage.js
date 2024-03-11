@@ -6,11 +6,12 @@ import axios from "axios";
 import { Paper, Typography } from "@mui/material";
 import TableComponent from "../Components/TableComponent";
 import CreateRecord from "../Components/CreateRecord";
+import Filters from "../Components/Filters";
 
 function IndexPage() {
-  const [zoneRecords, setZoneRecords] = useState([]);
+  // const [zoneRecords, setZoneRecords] = useState([]);
   const { userInfo } = useContext(UserContext);
-  const { currZone } = useContext(dnsContext);
+  const { currZone, zoneRecords, setZoneRecords } = useContext(dnsContext);
 
   useEffect(() => {
     const fetchRecords = () => {
@@ -97,8 +98,8 @@ function IndexPage() {
                   </div>
                   {zoneRecords && (
                     <Chart
-                      setZoneRecords={setZoneRecords}
-                      value={zoneRecords.rrsets}
+                    // setZoneRecords={setZoneRecords}
+                    // value={zoneRecords.rrsets}
                     />
                   )}
                 </div>
@@ -111,7 +112,7 @@ function IndexPage() {
                 borderBottom: "1px solid black",
               }}
             >
-              filters
+              <Filters />
             </div>
           </div>
           <div
@@ -122,17 +123,15 @@ function IndexPage() {
               textAlign: "center",
             }}
           >
-            {zoneRecords && (
-              <TableComponent
-                style={{
-                  width: "50%",
-                  padding: "5%",
-                  height: "100%",
-                }}
-                setZoneRecords={setZoneRecords}
-                value={zoneRecords.rrsets}
-              />
-            )}
+            <TableComponent
+              style={{
+                width: "50%",
+                padding: "5%",
+                height: "100%",
+              }}
+              // setZoneRecords={setZoneRecords}
+              // value={zoneRecords.rrsets}
+            />
             <div
               id="lowerRight"
               style={{
@@ -142,8 +141,8 @@ function IndexPage() {
               }}
             >
               <CreateRecord
-                setZoneRecords={setZoneRecords}
-                zoneRecords={zoneRecords}
+              // setZoneRecords={setZoneRecords}
+              // zoneRecords={zoneRecords}
               />
             </div>
           </div>

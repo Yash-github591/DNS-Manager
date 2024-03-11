@@ -1,9 +1,14 @@
 import * as React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { dnsContext } from "../context/dnsContext";
+import { useContext } from "react";
 
-export default function Chart({ value }) {
+export default function Chart() {
+  const { zoneRecords, setZoneRecords } = useContext(dnsContext);
+
   var counts = {},
-    data = [];
+    data = [],
+    value = zoneRecords.rrsets;
 
   if (value && value.length > 0) {
     for (var i = 0; i < value.length; i++) {

@@ -8,23 +8,26 @@ import RegisterPage from "./Pages/RegisterPage";
 import EditRecord from "./Pages/EditRecord";
 import { UserContextProvider } from "./context/UserContext";
 import { DnsContextProvider } from "./context/dnsContext";
+import { FilterContextProvider } from "./context/FilterContext";
 
 function App() {
   return (
-    <DnsContextProvider>
-      <UserContextProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route path="/" element={<IndexPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/edit" element={<EditRecord />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </UserContextProvider>
-    </DnsContextProvider>
+    <FilterContextProvider>
+      <DnsContextProvider>
+        <UserContextProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route path="/" element={<IndexPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/edit" element={<EditRecord />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </UserContextProvider>
+      </DnsContextProvider>
+    </FilterContextProvider>
   );
 }
 
