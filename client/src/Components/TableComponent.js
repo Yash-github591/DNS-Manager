@@ -22,7 +22,7 @@ import { dnsContext } from "../context/dnsContext";
 import { EditRecord } from "../Pages/EditRecord";
 import axios from "axios";
 
-export default function TableComponent({ value }) {
+export default function TableComponent({ setZoneRecords, value }) {
   const [openAlert, setOpenAlert] = useState(false);
   const [record, setRecord] = useState(null);
   const [rows, setRows] = useState([]);

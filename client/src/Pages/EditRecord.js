@@ -14,7 +14,7 @@ import {
 function EditRecord() {
   const { currZone, recordTobeEdited } = useContext(dnsContext);
   const [editedRecord, setEditedRecord] = useState({
-    name: recordTobeEdited ? recordTobeEdited.name : "",
+    name: recordTobeEdited ? recordTobeEdited.name.split(".")[0] : "",
     type: recordTobeEdited ? recordTobeEdited.type : "",
     ttl: recordTobeEdited ? recordTobeEdited.ttl : "",
     rrdatas: recordTobeEdited ? recordTobeEdited.rrdatas.join(",") : "", // Assuming rrdatas is an array
@@ -36,14 +36,24 @@ function EditRecord() {
     // Perform the logic to update the record with editedRecord data
     if (editedRecord.rrdatas.includes(",")) {
       editedRecord.rrdatas = editedRecord.rrdatas.split(","); // Convert rrdatas to an array
+      // remove spaces from editedRecord.rrdatas
+      editedRecord.rrdatas = editedRecord.rrdatas.map((str) =>
+        str.replace(/\s/g, "")
+      );
     }
-    console.log("Record Data to be edited:", editedRecord);
+    console.log("new record:", editedRecord);
+    console.log("Record data to be edited:", recordTobeEdited);
     axios
       .patch(
         `${process.env.REACT_APP_API_URL}/edit-dns-record`,
         {
           zone: currZone,
-          record: editedRecord,
+          record: {
+            name: `${editedRecord.name}.${currZone.dnsName}`,
+            type: editedRecord.type,
+            ttl: editedRecord.ttl,
+            rrdatas: editedRecord.rrdatas,
+          },
           recordTobeEdited: recordTobeEdited,
         },
         { withCredentials: true }
@@ -78,7 +88,7 @@ function EditRecord() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Name"
+                label="Name(without domain)"
                 name="name"
                 value={editedRecord.name}
                 onChange={handleInputChange}

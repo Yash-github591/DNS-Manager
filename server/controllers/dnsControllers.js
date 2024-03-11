@@ -95,9 +95,11 @@ const UpdateDnsRecord = async (req, res) => {
 
   const authClient = await auth.getClient();
 
-  console.log("update record", req.user);
   const projectId = req.user.projectId;
   const { zone, record, recordTobeEdited } = req.body;
+  // console.log("new record:", record);
+  // console.log("Record to be edited:", recordTobeEdited);
+  // console.log("Zone:", zone);
   const request = {
     // Identifies the project addressed by this request.
     project: projectId, // TODO: Update placeholder value.
@@ -132,12 +134,60 @@ const UpdateDnsRecord = async (req, res) => {
     const response = (await dns.changes.create(request)).data;
     res.send(JSON.stringify(response, null, 2));
   } catch (err) {
-    // console.error("error line 135", err.response.data.error.message);
+    console.error("error line 135", err.response.data.error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const CreateDnsRecord = async (req, res) => {
+  const auth = new google.auth.GoogleAuth({
+    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+  });
+
+  const authClient = await auth.getClient();
+
+  const projectId = req.user.projectId;
+  const zone = req.body.zone.name,
+    record = req.body.record;
+
+  console.log("Record to be added:", record);
+  console.log("Zone:", zone);
+  const request = {
+    // Identifies the project addressed by this request.
+    project: projectId, // TODO: Update placeholder value.
+
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: zone, // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+      additions: [
+        {
+          name: record.name, // Replace with your domain name
+          type: record.type,
+          ttl: parseInt(record.ttl),
+          rrdatas: record.rrdatas, // Replace with your IP address
+        },
+      ],
+      deletions: [],
+    },
+
+    auth: authClient,
+  };
+
+  try {
+    const response = (await dns.changes.create(request)).data;
+    // TODO: Change code below to process the `response` object:
+    // console.log(JSON.stringify(response, null, 2));
+    res.send(JSON.stringify(response, null, 2));
+  } catch (err) {
+    console.error("error adding record ", err.response.data.error.message);
     res.status(500).send("Internal Server Error");
   }
 };
 
 module.exports = {
+  CreateDnsRecord,
   ListDnsZones,
   SeeDnsRecords,
   DeleteDnsRecord,

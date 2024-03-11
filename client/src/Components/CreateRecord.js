@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { dnsContext } from "../context/dnsContext";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   TextField,
@@ -11,51 +10,61 @@ import {
   Paper,
 } from "@mui/material";
 
-function CreateRecord() {
-  const { currZone, recordTobeEdited } = useContext(dnsContext);
-  const [editedRecord, setEditedRecord] = useState({
+function CreateRecord({ setZoneRecords }) {
+  const { currZone } = useContext(dnsContext);
+  const [rrdatasInput, setRrdatasInput] = useState(""); // Assuming rrdatas is an array
+  const [Record, setRecord] = useState({
     name: "",
     type: "",
     ttl: "",
-    rrdatas: [], // Assuming rrdatas is an array
   });
 
-  const navigate = useNavigate();
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setEditedRecord((prevRecord) => ({
+    setRecord((prevRecord) => ({
       ...prevRecord,
       [name]: value,
     }));
   };
 
-  //   const handleSubmit = (event) => {
-  //     event.preventDefault();
-  //     // Perform the logic to update the record with editedRecord data
-  //     if (editedRecord.rrdatas.includes(",")) {
-  //       editedRecord.rrdatas = editedRecord.rrdatas.split(","); // Convert rrdatas to an array
-  //     }
-  //     console.log("Record Data to be edited:", editedRecord);
-  //     axios
-  //       .patch(
-  //         `${process.env.REACT_APP_API_URL}/edit-dns-record`,
-  //         {
-  //           zone: currZone,
-  //           record: editedRecord,
-  //           recordTobeEdited: recordTobeEdited,
-  //         },
-  //         { withCredentials: true }
-  //       )
-  //       .then((response) => {
-  //         alert("Record updated successfully");
-  //         navigate("/");
-  //         console.log(response);
-  //       })
-  //       .catch((error) => {
-  //         alert("Error updating record");
-  //         console.error(error.response);
-  //       });
-  //   };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Perform the logic to update the record with editedRecord data
+    console.log("data before adding:", Record);
+    var newRrdatas = [];
+    if (rrdatasInput.includes(",")) {
+      newRrdatas = rrdatasInput.split(",");
+      // remove spaces from newRrdatas
+      newRrdatas = newRrdatas.map((str) => str.replace(/\s/g, ""));
+    } else {
+      newRrdatas = [rrdatasInput.trim()];
+    }
+    console.log("newRrdatas:", newRrdatas);
+    console.log("Record Data to be added:", Record);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/create-dns-record`,
+        {
+          zone: currZone,
+          record: {
+            name: `${Record.name}.${currZone.dnsName}`,
+            type: Record.type,
+            ttl: Record.ttl,
+            rrdatas: newRrdatas,
+          },
+        },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        alert("Record added successfully");
+        // setZoneRecords((prevRecords) => [...prevRecords, Record]);
+        console.log(response);
+      })
+      .catch((error) => {
+        alert("Error adding record");
+        console.error(error.response);
+      });
+  };
 
   return (
     <Container component="main" maxWidth="sm">
@@ -76,9 +85,9 @@ function CreateRecord() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Name"
+                label="Name(without domain)"
                 name="name"
-                value={editedRecord.name}
+                value={Record.name}
                 onChange={handleInputChange}
                 fullWidth
                 required
@@ -88,7 +97,7 @@ function CreateRecord() {
               <TextField
                 label="Type"
                 name="type"
-                value={editedRecord.type}
+                value={Record.type}
                 onChange={handleInputChange}
                 fullWidth
                 required
@@ -98,7 +107,7 @@ function CreateRecord() {
               <TextField
                 label="TTL(seconds)"
                 name="ttl"
-                value={editedRecord.ttl}
+                value={Record.ttl}
                 onChange={handleInputChange}
                 fullWidth
                 required
@@ -108,8 +117,8 @@ function CreateRecord() {
               <TextField
                 label="IP Addresses(Comma separated)"
                 name="rrdatas"
-                value={editedRecord.rrdatas}
-                onChange={handleInputChange}
+                value={rrdatasInput}
+                onChange={(e) => setRrdatasInput(e.target.value)}
                 fullWidth
                 required
               />
@@ -121,6 +130,7 @@ function CreateRecord() {
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
+            onClick={handleSubmit}
           >
             Create
           </Button>

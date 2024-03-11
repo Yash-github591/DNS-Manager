@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { dnsContext } from "../context/dnsContext";
-import { useNavigate } from "react-router-dom";
 import Chart from "../Components/Chart";
 import axios from "axios";
 import { Paper, Typography } from "@mui/material";
@@ -10,9 +9,8 @@ import CreateRecord from "../Components/CreateRecord";
 
 function IndexPage() {
   const [zoneRecords, setZoneRecords] = useState([]);
-  const { userInfo, setUserInfo } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const { currZone } = useContext(dnsContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecords = () => {
@@ -97,7 +95,12 @@ function IndexPage() {
                       {currZone.name}
                     </div>
                   </div>
-                  {zoneRecords && <Chart value={zoneRecords.rrsets} />}
+                  {zoneRecords && (
+                    <Chart
+                      setZoneRecords={setZoneRecords}
+                      value={zoneRecords.rrsets}
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -126,6 +129,7 @@ function IndexPage() {
                   padding: "5%",
                   height: "100%",
                 }}
+                setZoneRecords={setZoneRecords}
                 value={zoneRecords.rrsets}
               />
             )}
@@ -137,7 +141,10 @@ function IndexPage() {
                 borderLeft: "1px solid black",
               }}
             >
-              <CreateRecord />
+              <CreateRecord
+                setZoneRecords={setZoneRecords}
+                zoneRecords={zoneRecords}
+              />
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  CreateDnsRecord,
   ListDnsZones,
   SeeDnsRecords,
   DeleteDnsRecord,
@@ -9,6 +10,7 @@ const { authenticateToken } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
+router.post("/create-dns-record", authenticateToken, CreateDnsRecord);
 router.get("/list-dns-zones", authenticateToken, ListDnsZones);
 router.get("/see-all-dns-records", authenticateToken, SeeDnsRecords);
 router.delete("/delete-dns-record", authenticateToken, DeleteDnsRecord);
