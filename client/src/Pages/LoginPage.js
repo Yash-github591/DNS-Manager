@@ -7,7 +7,6 @@ import axios from "axios";
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
   const { setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_URL;
@@ -27,7 +26,7 @@ function LoginPage() {
 
       if (response.status === 200) {
         setUserInfo(response.data);
-        setRedirect(true);
+        navigate("/");
         alert(`Welcome ${response.data.username}`);
       } else {
         alert("An error occurred. Please try again.");
@@ -35,10 +34,6 @@ function LoginPage() {
     } catch (error) {
       alert("An error occurred: " + error.message);
     }
-  }
-
-  if (redirect) {
-    navigate("/");
   }
 
   return (

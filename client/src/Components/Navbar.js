@@ -40,6 +40,10 @@ function Navbar() {
           console.log(error);
         });
     }
+    fetchUserInfo();
+  }, []);
+
+  useEffect(() => {
     function fetchDnsZones() {
       axios
         .get(`${process.env.REACT_APP_API_URL}/list-dns-zones`, {
@@ -47,8 +51,10 @@ function Navbar() {
         })
         .then((response) => {
           if (response.data) {
-            setDnsZones(response.data.managedZones);
-            setCurrZone(response.data.managedZones[0]);
+            // setDnsZones(response.data.managedZones);
+            setDnsZones((prev) => response.data.managedZones); // to avoid react warning
+            // setCurrZone(response.data.managedZones[0]);
+            setCurrZone((prev) => response.data.managedZones[0]);
             console.log(response.data.managedZones);
           }
         })
@@ -56,9 +62,8 @@ function Navbar() {
           console.log(error);
         });
     }
-    fetchUserInfo();
     fetchDnsZones();
-  }, []);
+  }, [userInfo]);
 
   function handleLogout() {
     axios.post(`${process.env.REACT_APP_API_URL}/logout`, null, {
