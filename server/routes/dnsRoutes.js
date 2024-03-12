@@ -7,13 +7,39 @@ const {
   UpdateDnsRecord,
 } = require("../controllers/dnsControllers");
 const { authenticateToken } = require("../middlewares/authMiddleware");
+const { generateAuthclient } = require("../middlewares/dnsMiddleware");
 
 const router = express.Router();
 
-router.post("/create-dns-record", authenticateToken, CreateDnsRecord);
-router.get("/list-dns-zones", authenticateToken, ListDnsZones);
-router.get("/see-all-dns-records", authenticateToken, SeeDnsRecords);
-router.delete("/delete-dns-record", authenticateToken, DeleteDnsRecord);
-router.patch("/edit-dns-record", authenticateToken, UpdateDnsRecord);
+router.post(
+  "/create-dns-record",
+  authenticateToken,
+  generateAuthclient,
+  CreateDnsRecord
+);
+router.get(
+  "/list-dns-zones",
+  authenticateToken,
+  generateAuthclient,
+  ListDnsZones
+);
+router.get(
+  "/see-all-dns-records",
+  authenticateToken,
+  generateAuthclient,
+  SeeDnsRecords
+);
+router.delete(
+  "/delete-dns-record",
+  authenticateToken,
+  generateAuthclient,
+  DeleteDnsRecord
+);
+router.patch(
+  "/edit-dns-record",
+  authenticateToken,
+  generateAuthclient,
+  UpdateDnsRecord
+);
 
 module.exports = router;

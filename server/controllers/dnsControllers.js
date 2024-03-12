@@ -2,12 +2,8 @@ const { google } = require("googleapis");
 const dns = google.dns("v1");
 
 const ListDnsZones = async (req, res) => {
+  const authClient = req.authClient;
   const projectId = req.user.projectId;
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
-
-  const authClient = await auth.getClient();
   const request = {
     // Identifies the project addressed by this request.
     project: projectId,
@@ -25,12 +21,7 @@ const ListDnsZones = async (req, res) => {
 };
 
 const SeeDnsRecords = async (req, res) => {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
-
-  const authClient = await auth.getClient();
-
+  const authClient = req.authClient;
   const currProjectId = req.user.projectId;
   const currZone = req.query.zone;
 
@@ -53,12 +44,7 @@ const SeeDnsRecords = async (req, res) => {
 };
 
 const DeleteDnsRecord = async (req, res) => {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
-
-  const authClient = await auth.getClient();
-
+  const authClient = req.authClient;
   const projectId = req.user.projectId,
     zone = req.query.zone.name,
     record = req.query.record;
@@ -89,12 +75,7 @@ const DeleteDnsRecord = async (req, res) => {
 };
 
 const UpdateDnsRecord = async (req, res) => {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
-
-  const authClient = await auth.getClient();
-
+  const authClient = req.authClient;
   const projectId = req.user.projectId;
   const { zone, record, recordTobeEdited } = req.body;
   // console.log("new record:", record);
@@ -140,12 +121,7 @@ const UpdateDnsRecord = async (req, res) => {
 };
 
 const CreateDnsRecord = async (req, res) => {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
-
-  const authClient = await auth.getClient();
-
+  const authClient = req.authClient;
   const projectId = req.user.projectId;
   const zone = req.body.zone.name,
     record = req.body.record;

@@ -32,7 +32,7 @@ const register = async (req, res) => {
           // sends a cookie to the client with the token as the value of the cookie.
           res
             .cookie("token", token, {
-              sameSite: "none",
+              sameSite: "none", // this means the cookie will only be sent in a cross-site request
               secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
             })
             .json({ username, projectId, id: userDoc._id });
